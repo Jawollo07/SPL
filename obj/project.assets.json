@@ -101,6 +101,23 @@
           }
         }
       },
+      "Avalonia.AvaloniaEdit/12.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Avalonia": "12.0.0"
+        },
+        "compile": {
+          "lib/net10.0/AvaloniaEdit.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/AvaloniaEdit.dll": {}
+        },
+        "resource": {
+          "lib/net10.0/zh-Hans/AvaloniaEdit.resources.dll": {
+            "locale": "zh-Hans"
+          }
+        }
+      },
       "Avalonia.BuildServices/11.3.2": {
         "type": "package",
         "build": {
@@ -837,6 +854,22 @@
         "runtimes/win-arm64/native/av_libglesv2.dll",
         "runtimes/win-x64/native/av_libglesv2.dll",
         "runtimes/win-x86/native/av_libglesv2.dll"
+      ]
+    },
+    "Avalonia.AvaloniaEdit/12.0.0": {
+      "sha512": "VNfaYdTbiQ2DlSkSMoLg4DhTbQmQR0cFT6nqEqLkaYGLjBWmUdv5BNIuoObK4c9cgzFqnEJXBaOp4R/bxgFKfQ==",
+      "type": "package",
+      "path": "avalonia.avaloniaedit/12.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "avalonia.avaloniaedit.12.0.0.nupkg.sha512",
+        "avalonia.avaloniaedit.nuspec",
+        "lib/net10.0/AvaloniaEdit.dll",
+        "lib/net10.0/zh-Hans/AvaloniaEdit.resources.dll",
+        "lib/net8.0/AvaloniaEdit.dll",
+        "lib/net8.0/zh-Hans/AvaloniaEdit.resources.dll"
       ]
     },
     "Avalonia.BuildServices/11.3.2": {
@@ -1653,6 +1686,7 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "Avalonia >= 12.0.2",
+      "Avalonia.AvaloniaEdit >= 12.0.0",
       "Avalonia.Desktop >= 12.0.2",
       "Avalonia.Fonts.Inter >= 12.0.2",
       "Avalonia.Themes.Fluent >= 12.0.2",
@@ -1707,6 +1741,10 @@
           "Avalonia": {
             "target": "Package",
             "version": "[12.0.2, )"
+          },
+          "Avalonia.AvaloniaEdit": {
+            "target": "Package",
+            "version": "[12.0.0, )"
           },
           "Avalonia.Desktop": {
             "target": "Package",
