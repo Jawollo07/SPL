@@ -59,7 +59,7 @@ nunit-*.xml
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
-
+obj
 # .NET Core
 project.lock.json
 project.fragment.lock.json
