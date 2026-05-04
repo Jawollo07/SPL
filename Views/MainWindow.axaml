@@ -8,13 +8,32 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Jugend_Forscht"
-        xmlns:AvaloniaEdit="clr-namespace:editor;assembly=AvaloniaEdit">
+        xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    
-
+    <!-- 1.Zeile Überschrift & Toolbar-->
+    <Grid RowDefinitions="Auto, *, 200">
+        <Border Grid.Row="0" Background="#2D2D2D" BorderBrush="#3E3E3E" BorderThickness="0,0,0,1" Padding="10,5">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="SPL" Foreground="#569DAA" FontWeight="Bold" VerticalAlignment="Center" FontSize="16"/>
+                    <Separator Width="1" Height="20" Background="#444"></Separator>
+                    <!--Der "Ausführen" Button-->
+                    <Button Name="Run" Content="▶ Ausführen" Background="#28A745" Foreground="White" Padding="15,3" CornerRadius="4"/>
+                </StackPanel>
+            </Grid>
+        </Border> 
+        <!-- 2.Zeile: Haupt Editor-->
+        <AvaloniaEdit:TextEditor Grid.Row="1" Name="Editor" ShowLineNumbers="True" FontFamily="Cascadia Code,Consolas,Monospace" FontSize="14" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="#1E1E1E" Foreground="#D4D4D4"/>
+        <!-- 3.Zeile: Trenner/Header für Output-->
+        <Border Grid.Row="2" Background="#2D2D2D" Padding="10,2">
+            <TextBlock Text="Konsole/Output" FontSize="12" Foreground="#858585" FontWeight="SemiBold"></TextBlock>
+        </Border>
+        <!-- 4.Zeile Konsole/Ouput-->
+         <AvaloniaEdit:TextEditor Grid.Row="3" Name="Output" IsReadOnly="True" ShowLineNumbers="False" Background="#000000" Foreground="#A9FFAB" FontFamily="Cascadia Code,Monospace" FontSize="13" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" />
+    </Grid>
 </Window>
