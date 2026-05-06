@@ -16,14 +16,14 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     <!-- 1.Zeile Überschrift & Toolbar-->
-    <Grid RowDefinitions="Auto, *, 200">
+    <Grid RowDefinitions="Auto, *, Auto, 200">
         <Border Grid.Row="0" Background="#2D2D2D" BorderBrush="#3E3E3E" BorderThickness="0,0,0,1" Padding="10,5">
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock Text="SPL" Foreground="#569DAA" FontWeight="Bold" VerticalAlignment="Center" FontSize="16"/>
                     <Separator Width="1" Height="20" Background="#444"></Separator>
                     <!--Der "Ausführen" Button-->
-                    <Button Name="Run" Content="▶ Ausführen" Background="#28A745" Foreground="White" Padding="15,3" CornerRadius="4"/>
+                    <Button Name="Run" Content="▶ Ausführen" Background="#28A745" Foreground="White" Padding="15,3" CornerRadius="4" Click="Run"/>
                 </StackPanel>
             </Grid>
         </Border> 
