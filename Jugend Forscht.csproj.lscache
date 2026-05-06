@@ -287,7 +287,11 @@ Views/MainWindow.axaml.cs
 <NUGET>/communitytoolkit.mvvm/8.4.1/analyzers/dotnet/roslyn5.0/cs/
  CommunityToolkit.Mvvm.CodeFixers.dll
  CommunityToolkit.Mvvm.SourceGenerators.dll
-<NUGET>/microsoft.extensions.logging.abstractions/8.0.0/analyzers/dotnet/roslyn4.4/cs/Microsoft.Extensions.Logging.Generators.dll
+<NUGET>/
+ microsoft.extensions.logging.abstractions/8.0.0/analyzers/dotnet/roslyn4.4/cs/Microsoft.Extensions.Logging.Generators.dll
+ microsoft.net.illink.tasks/10.0.4/analyzers/dotnet/cs/
+  ILLink.CodeFixProvider.dll
+  ILLink.RoslynAnalyzer.dll
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/10.0.104/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
