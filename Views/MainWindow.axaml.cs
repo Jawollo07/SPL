@@ -26,8 +26,12 @@ public class BinaryExpr : Expression
 // Anweisungen (Statements)
 public class Drucken : Statement { public Expression ExpressionValue { get; set; } = new LiteralExpr(); }
 public class Zuweisung : Statement { public string VariableName { get; set; } = ""; public Expression Wert { get; set; } = new LiteralExpr(); }
-public class LieseStatement : Statement { public string VariableName { get; set; } = ""; }
-
+public class EingebenStatement : Statement { public string VariableName { get; set; } = ""; }
+public class WahrendStatement : Statement
+{
+    public Expression Bedingung { get; set; } = new LiteralExpr();
+    public List<Statement> Korper { get; set; } = new();
+}
 public class WennStatement : Statement
 {
     public Expression Bedingung { get; set; } = new LiteralExpr();
@@ -130,20 +134,20 @@ private object EvaluateBinary(BinaryExpr b)
                 {
                     _variables[zuweis.VariableName] = Evaluate(zuweis.Wert);
                 }
-                else if (smt is LieseStatement lese)
+                else if (smt is EingebenStatement eingabe)
                 {
                     // Liest vom InputField und speichert als Variable
                     string input = InputField.Text ?? "";
                     // Versuche als Zahl zu parsen, sonst als String speichern
                     if (double.TryParse(input, out double numValue))
                     {
-                        _variables[lese.VariableName] = numValue;
+                        _variables[eingabe.VariableName] = numValue;
                     }
                     else
                     {
-                        _variables[lese.VariableName] = input;
+                        _variables[eingabe.VariableName] = input;
                     }
-                    Output.Text += $"[Eingabe] {lese.VariableName} = {input}\n";
+                    Output.Text += $"[Eingabe] {eingabe.VariableName} = {input}\n";
                     InputField.Clear();
                 }
                 else if (smt is WennStatement wenn)
@@ -157,6 +161,15 @@ private object EvaluateBinary(BinaryExpr b)
                     else if (wenn.SonstBlock.Count > 0)
                     {
                         RunInterpreter(wenn.SonstBlock);
+                    }
+                }
+                else if (smt is WahrendStatement wahrend)
+                {
+                    // Wir werten die Bedingung aus. Solange sie nicht 0 ist, läuft die Schleife.
+                    while (Convert.ToDouble(Evaluate(wahrend.Bedingung)) != 0)
+                    {
+                    // Führe den Block der Schleife aus
+                    RunInterpreter(wahrend.Korper);
                     }
                 }
             }
@@ -173,7 +186,7 @@ private object EvaluateBinary(BinaryExpr b)
         private readonly List<(TokenType Type, string Pattern)> _definitions = new()
         {
             (TokenType.String, @"""[^""]*"""), // Strings FIRST - vor Identifiern!
-            (TokenType.Keyword, @"\b(drucke|lese|ist|sonst|während)\b"),
+            (TokenType.Keyword, @"\b(drucke|eingabe|ist|sonst|während)\b"),
             (TokenType.Number, @"\d+(?:\.\d+)?"), // Mit Float-Support
             (TokenType.Identifier, @"[a-zA-Z_][a-zA-Z0-9_]*"),
             (TokenType.Operator, @"(==|>=|<=|>|<|\+|-|\*|/|=)"), // Reihenfolge wichtig: == vor =
@@ -300,13 +313,27 @@ private object EvaluateBinary(BinaryExpr b)
         }
     }
 
-    if (Check(TokenType.Keyword) && Peek().Value == "lese")
+    if (Check(TokenType.Keyword) && Peek().Value == "eingabe")
     {
         Match(TokenType.Keyword);
         var varName = Match(TokenType.Identifier).Value;
-        return new LieseStatement { VariableName = varName, Line = startLine };
+        return new EingebenStatement { VariableName = varName, Line = startLine };
     }
+    if (Check(TokenType.Keyword) && Peek().Value == "während")
+    {
+        Match(TokenType.Keyword); // "während"
+        Match(TokenType.Separator); // "("
+        var bedingung = ParseExpression();
+        Match(TokenType.Separator); // ")"
 
+        var korper = ParseBlock(); // Nutzt die vorhandene ParseBlock-Logik
+
+        return new WahrendStatement { 
+            Bedingung = bedingung, 
+            Korper = korper, 
+            Line = startLine 
+        };
+    }
     if (Check(TokenType.Keyword) && Peek().Value == "wenn")
     {
         Match(TokenType.Keyword);
