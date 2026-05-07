@@ -3,43 +3,104 @@
         xmlns:vm="using:Jugend_Forscht.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="700"
         x:Class="Jugend_Forscht.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Jugend_Forscht"
+        Title="SPL - Simple Programming Language"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
         xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    <!-- 1.Zeile Überschrift & Toolbar-->
-    <Grid RowDefinitions="Auto, *, Auto, Auto, 200">
-        <Border Grid.Row="0" Background="#2D2D2D" BorderBrush="#3E3E3E" BorderThickness="0,0,0,1" Padding="10,5">
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock Text="SPL" Foreground="#569DAA" FontWeight="Bold" VerticalAlignment="Center" FontSize="16"/>
-                    <Separator Width="1" Height="20" Background="#444"></Separator>
-                    <!--Der "Ausführen" Button-->
-                    <Button Name="Run" Content="▶ Ausführen" Background="#28A745" Foreground="White" Padding="15,3" CornerRadius="4" Click="Run_Click"/>
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Opacity" Value="0.85"/>
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="Opacity" Value="0.7"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto, 1*, Auto, 35, 200" Background="#0D1117">
+        
+        <!-- 1. Header with Toolbar -->
+        <Border Grid.Row="0" Background="#161B22" BorderBrush="#30363D" BorderThickness="0,0,0,1" Padding="16,12">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <!-- Logo/Title -->
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="▶" Foreground="#58A6FF" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Text="SPL Interpreter" Foreground="#C9D1D9" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="v1.0" Foreground="#8B949E" FontSize="12" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 </StackPanel>
+
+                <!-- Center Spacer -->
+                <Border Grid.Column="1"/>
+
+                <!-- Run Button -->
+                <Button Grid.Column="2" Name="Run" Content="▶ Ausführen" Background="#238636" Foreground="White" 
+                        Padding="16,8" CornerRadius="6" Click="Run_Click"
+                        ToolTip.Tip="Drücke Ctrl+Enter zum Ausführen"/>
             </Grid>
-        </Border> 
-        <!-- 2.Zeile: Haupt Editor-->
-        <AvaloniaEdit:TextEditor Grid.Row="1" Name="Editor" ShowLineNumbers="True" FontFamily="Cascadia Code,Consolas,Monospace" FontSize="14" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="#1E1E1E" Foreground="#D4D4D4"/>
-        <!-- 3.Zeile: Trenner/Header für Input-->
-        <Border Grid.Row="2" Background="#2D2D2D" Padding="10,2">
-            <TextBlock Text="Eingabe" FontSize="12" Foreground="#858585" FontWeight="SemiBold"></TextBlock>
         </Border>
-        <!-- 3b.Zeile: Input Feld -->
-        <TextBox Grid.Row="3" Name="InputField" Background="#2D2D2D" Foreground="#D4D4D4" BorderBrush="#3E3E3E" Padding="10,5" Height="35" />
-        <!-- Alte Zeile 3: Trenner/Header für Output (ist jetzt Zeile 4)-->
-        <Border Grid.Row="4" Background="#2D2D2D" Padding="10,2">
-            <TextBlock Text="Konsole/Output" FontSize="12" Foreground="#858585" FontWeight="SemiBold"></TextBlock>
+
+        <!-- 2. Main Editor Section -->
+        <Border Grid.Row="1" Background="#0D1117" Margin="0" CornerRadius="0">
+            <Grid RowDefinitions="Auto, *">
+                <!-- Editor Label -->
+                <Border Background="#161B22" Padding="16,10" BorderBrush="#30363D" BorderThickness="0,0,0,1">
+                    <TextBlock Text="📝 Code Editor" FontSize="13" Foreground="#8B949E" FontWeight="SemiBold"/>
+                </Border>
+                
+                <!-- Editor -->
+                <AvaloniaEdit:TextEditor Grid.Row="1" Name="Editor" ShowLineNumbers="True" 
+                                        FontFamily="'Cascadia Code','Consolas','Monospace'" FontSize="14" 
+                                        HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" 
+                                        Background="#0D1117" Foreground="#C9D1D9" Margin="0"
+                                        LineNumbersForeground="#30363D"/>
+            </Grid>
         </Border>
-        <!-- 4.Zeile Konsole/Ouput (ist jetzt Zeile 5)-->
-         <AvaloniaEdit:TextEditor Grid.Row="5" Name="Output" IsReadOnly="True" ShowLineNumbers="False" Background="#000000" Foreground="#A9FFAB" FontFamily="Cascadia Code,Monospace" FontSize="13" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" />
+
+        <!-- 3. Input Section Header -->
+        <Border Grid.Row="2" Background="#161B22" BorderBrush="#30363D" BorderThickness="0,1,0,1" Padding="16,10">
+            <TextBlock Text="⌨️  Eingabe" FontSize="13" Foreground="#8B949E" FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- 4. Input Field -->
+        <TextBox Grid.Row="3" Name="InputField" Background="#0D1117" Foreground="#C9D1D9" 
+                BorderBrush="#30363D" Padding="12,8" Margin="0" 
+                BorderThickness="0" FontSize="13"
+                Watermark="Geben Sie Eingaben hier ein..."
+                ToolTip.Tip="Hier können Sie Text eingeben, wenn das Programm mit 'eingabe' wartet"/>
+
+        <!-- 5. Output Section -->
+        <Grid Grid.Row="4" RowDefinitions="Auto, *" Background="#0D1117">
+            <!-- Output Header -->
+            <Border Background="#161B22" Padding="16,10" BorderBrush="#30363D" BorderThickness="0,1,0,1">
+                <TextBlock Text="📋 Konsole / Ausgabe" FontSize="13" Foreground="#8B949E" FontWeight="SemiBold"/>
+            </Border>
+            
+            <!-- Output -->
+            <AvaloniaEdit:TextEditor Grid.Row="1" Name="Output" IsReadOnly="True" ShowLineNumbers="False" 
+                                    Background="#010409" Foreground="#79C0FF" 
+                                    FontFamily="'Cascadia Code','Monospace'" FontSize="12" 
+                                    HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                                    Margin="0"/>
+        </Grid>
     </Grid>
 </Window>
