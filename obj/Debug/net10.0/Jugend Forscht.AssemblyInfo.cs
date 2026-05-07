@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jugend Forscht")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a585d9d6982167fc2e77287b1c3b3c805d96fd7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e42dce47753c454f8baeb35be6487fe31b1bad2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jugend Forscht")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jugend Forscht")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

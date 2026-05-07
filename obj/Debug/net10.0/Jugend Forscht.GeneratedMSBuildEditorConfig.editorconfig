@@ -1,10 +1,4 @@
 is_global = true
-build_property.EnableAotAnalyzer = 
-build_property.EnableSingleFileAnalyzer = 
-build_property.EnableTrimAnalyzer = 
-build_property.IncludeAllContentForSelfExtract = 
-build_property.VerifyReferenceTrimCompatibility = 
-build_property.VerifyReferenceAotCompatibility = 
 build_property.AvaloniaNameGeneratorIsEnabled = true
 build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
 build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
@@ -28,14 +22,14 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Jugend_Forscht
-build_property.ProjectDir = /home/jannik/Nextcloud/Schule/Forschen/Jugend Forscht/
+build_property.ProjectDir = /root/SPL/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[/home/jannik/Nextcloud/Schule/Forschen/Jugend Forscht/App.axaml]
+[/root/SPL/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/jannik/Nextcloud/Schule/Forschen/Jugend Forscht/Views/MainWindow.axaml]
+[/root/SPL/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

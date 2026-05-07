@@ -16,7 +16,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     <!-- 1.Zeile Überschrift & Toolbar-->
-    <Grid RowDefinitions="Auto, *, Auto, 200">
+    <Grid RowDefinitions="Auto, *, Auto, Auto, 200">
         <Border Grid.Row="0" Background="#2D2D2D" BorderBrush="#3E3E3E" BorderThickness="0,0,0,1" Padding="10,5">
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -29,11 +29,17 @@
         </Border> 
         <!-- 2.Zeile: Haupt Editor-->
         <AvaloniaEdit:TextEditor Grid.Row="1" Name="Editor" ShowLineNumbers="True" FontFamily="Cascadia Code,Consolas,Monospace" FontSize="14" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="#1E1E1E" Foreground="#D4D4D4"/>
-        <!-- 3.Zeile: Trenner/Header für Output-->
+        <!-- 3.Zeile: Trenner/Header für Input-->
         <Border Grid.Row="2" Background="#2D2D2D" Padding="10,2">
+            <TextBlock Text="Eingabe" FontSize="12" Foreground="#858585" FontWeight="SemiBold"></TextBlock>
+        </Border>
+        <!-- 3b.Zeile: Input Feld -->
+        <TextBox Grid.Row="3" Name="InputField" Background="#2D2D2D" Foreground="#D4D4D4" BorderBrush="#3E3E3E" Padding="10,5" Height="35" />
+        <!-- Alte Zeile 3: Trenner/Header für Output (ist jetzt Zeile 4)-->
+        <Border Grid.Row="4" Background="#2D2D2D" Padding="10,2">
             <TextBlock Text="Konsole/Output" FontSize="12" Foreground="#858585" FontWeight="SemiBold"></TextBlock>
         </Border>
-        <!-- 4.Zeile Konsole/Ouput-->
-         <AvaloniaEdit:TextEditor Grid.Row="3" Name="Output" IsReadOnly="True" ShowLineNumbers="False" Background="#000000" Foreground="#A9FFAB" FontFamily="Cascadia Code,Monospace" FontSize="13" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" />
+        <!-- 4.Zeile Konsole/Ouput (ist jetzt Zeile 5)-->
+         <AvaloniaEdit:TextEditor Grid.Row="5" Name="Output" IsReadOnly="True" ShowLineNumbers="False" Background="#000000" Foreground="#A9FFAB" FontFamily="Cascadia Code,Monospace" FontSize="13" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" />
     </Grid>
 </Window>

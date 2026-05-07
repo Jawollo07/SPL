@@ -7,7 +7,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+.venv
 # Build results
 [Bb]in/
 [Oo]bj/
