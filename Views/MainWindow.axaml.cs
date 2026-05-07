@@ -1,4 +1,6 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +32,15 @@ public class BinaryExpr : Expression
 }
 
 // Anweisungen (Statements)
+public class Leeren : Statement { }
 public class Drucken : Statement { public Expression ExpressionValue { get; set; } = new LiteralExpr(); }
 public class Zuweisung : Statement { public string VariableName { get; set; } = ""; public Expression Wert { get; set; } = new LiteralExpr(); }
 public class EingebenStatement : Statement { public string VariableName { get; set; } = ""; }
+public class ZeichnenStatement : Statement 
+{ 
+    public string FormType { get; set; } = ""; // kreis, rechteck, linie, stern
+    public List<Expression> Parameter { get; set; } = new();
+}
 public class WahrendStatement : Statement
 {
     public Expression Bedingung { get; set; } = new LiteralExpr();
@@ -80,6 +88,8 @@ public partial class MainWindow : Window
                     <Word>sonst</Word>
                     <Word>während</Word>
                     <Word>eingeben</Word>
+                    <Word>exit</Word>
+                    <Word>warte</Word>
                 </Keywords>
 
                 <Span color=""Strings"">
@@ -203,6 +213,22 @@ private object EvaluateBinary(BinaryExpr b)
                     Output.Text += $"[Eingabe] {eingabe.VariableName} = {input}\n";
                     InputField.Clear();
                 }
+                else if (smt is Leeren)
+                {
+                    Output.Text = "";
+                    DrawingCanvas.Children.Clear();
+                }
+                else if (smt is ZeichnenStatement zeichnen)
+                {
+                    try
+                    {
+                        DrawShape(zeichnen);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Output.Text += $"[Zeichnen-Fehler] {ex.Message}\n";
+                    }
+                }
                 else if (smt is WennStatement wenn)
                 {
                     // Wir prüfen: Ist die Bedingung nicht 0?
@@ -245,6 +271,117 @@ private object EvaluateBinary(BinaryExpr b)
             }
         }
     }   
+
+    private void DrawShape(ZeichnenStatement zeichnen)
+    {
+        if (zeichnen.Parameter.Count < 3)
+            throw new Exception("Zu wenige Parameter für Zeichenbefehl");
+
+        double x = Convert.ToDouble(Evaluate(zeichnen.Parameter[0]));
+        double y = Convert.ToDouble(Evaluate(zeichnen.Parameter[1]));
+        double size = Convert.ToDouble(Evaluate(zeichnen.Parameter[2]));
+
+        var brush = new SolidColorBrush(Colors.LimeGreen);
+        var pen = new Pen(brush, 2);
+
+        switch (zeichnen.FormType.ToLower())
+        {
+            case "kreis":
+                {
+                    var circle = new Ellipse
+                    {
+                        Width = size,
+                        Height = size,
+                        Fill = null,
+                        Stroke = brush,
+                        StrokeThickness = 2
+                    };
+                    Canvas.SetLeft(circle, x - size / 2);
+                    Canvas.SetTop(circle, y - size / 2);
+                    DrawingCanvas.Children.Add(circle);
+                    Output.Text += $"[Zeichnung] Kreis bei ({x}, {y}) mit Größe {size}\n";
+                    break;
+                }
+            case "rechteck":
+                {
+                    if (zeichnen.Parameter.Count < 4)
+                        throw new Exception("Rechteck benötigt: x1 y1 x2 y2");
+                    double x2 = Convert.ToDouble(Evaluate(zeichnen.Parameter[3]));
+                    double y2 = Convert.ToDouble(Evaluate(zeichnen.Parameter[2]));
+
+                    var rect = new Rectangle
+                    {
+                        Width = Math.Abs(x2 - x),
+                        Height = Math.Abs(y2 - y),
+                        Fill = null,
+                        Stroke = brush,
+                        StrokeThickness = 2
+                    };
+                    Canvas.SetLeft(rect, Math.Min(x, x2));
+                    Canvas.SetTop(rect, Math.Min(y, y2));
+                    DrawingCanvas.Children.Add(rect);
+                    Output.Text += $"[Zeichnung] Rechteck von ({x}, {y}) zu ({x2}, {y2})\n";
+                    break;
+                }
+            case "linie":
+                {
+                    if (zeichnen.Parameter.Count < 4)
+                        throw new Exception("Linie benötigt: x1 y1 x2 y2");
+                    double x2 = Convert.ToDouble(Evaluate(zeichnen.Parameter[3]));
+                    double y2 = Convert.ToDouble(Evaluate(zeichnen.Parameter[2]));
+
+                    var line = new Line
+                    {
+                        StartPoint = new Point(x, y),
+                        EndPoint = new Point(x2, y2),
+                        Stroke = brush,
+                        StrokeThickness = 2
+                    };
+                    DrawingCanvas.Children.Add(line);
+                    Output.Text += $"[Zeichnung] Linie von ({x}, {y}) zu ({x2}, {y2})\n";
+                    break;
+                }
+            case "stern":
+                {
+                    DrawStar(x, y, size, brush);
+                    Output.Text += $"[Zeichnung] Stern bei ({x}, {y}) mit Größe {size}\n";
+                    break;
+                }
+            default:
+                throw new Exception($"Unbekannte Form: {zeichnen.FormType}");
+        }
+    }
+
+    private void DrawStar(double centerX, double centerY, double size, Brush brush)
+    {
+        const int points = 5;
+        var geometry = new StreamGeometry();
+
+        using (var context = geometry.Open())
+        {
+            for (int i = 0; i < points * 2; i++)
+            {
+                double angle = (i * Math.PI) / points - Math.PI / 2;
+                double radius = (i % 2 == 0) ? size : size / 2;
+                double px = centerX + radius * Math.Cos(angle);
+                double py = centerY + radius * Math.Sin(angle);
+
+                if (i == 0)
+                    context.BeginFigure(new Point(px, py), true);
+                else
+                    context.LineTo(new Point(px, py));
+            }
+        }
+
+        var path = new Path
+        {
+            Data = geometry,
+            Fill = null,
+            Stroke = brush,
+            StrokeThickness = 2
+        };
+        DrawingCanvas.Children.Add(path);
+    }
 }
 
     public class Tokenizer
@@ -253,7 +390,7 @@ private object EvaluateBinary(BinaryExpr b)
         {
             (TokenType.Comment, @"#.*"), // Ignoriert Kommentare
             (TokenType.String, @"""[^""]*"""), // Strings FIRST - vor Identifiern!
-            (TokenType.Keyword, @"\b(drucke|eingabe|ist|sonst|während|exit|warte)\b"), // Keywords vor Identifiern!
+            (TokenType.Keyword, @"\b(drucke|leeren|eingabe|ist|sonst|während|exit|warte|zeichne)\b"), // Keywords vor Identifiern!
             (TokenType.Number, @"\d+(?:\.\d+)?"), // Mit Float-Support
             (TokenType.Identifier, @"[a-zA-Z_][a-zA-Z0-9_]*"),
             (TokenType.Operator, @"(==|>=|<=|>|<|\+|-|\*|/|=)"), // Reihenfolge wichtig: == vor =
@@ -348,6 +485,11 @@ private object EvaluateBinary(BinaryExpr b)
         System.Environment.Exit(0); // Beendet die Anwendung sofort
         return null; // Dieser Code wird nie erreicht, aber der Parser erwartet einen Rückgabewert
     }
+    if (Check(TokenType.Keyword) && Peek().Value == "leeren")
+    {
+        Match(TokenType.Keyword);
+        return new Leeren { Line = startLine };
+    }
     if (Check(TokenType.Keyword) && Peek().Value == "drucke")
     {
         Match(TokenType.Keyword);
@@ -404,6 +546,24 @@ private object EvaluateBinary(BinaryExpr b)
         var varName = Match(TokenType.Identifier).Value;
         return new EingebenStatement { VariableName = varName, Line = startLine };
     }
+
+    if (Check(TokenType.Keyword) && Peek().Value == "zeichne")
+    {
+        Match(TokenType.Keyword); // "zeichne"
+        var formType = Match(TokenType.String).Value.Trim('"');
+        var parameters = new List<Expression>();
+        
+        // Sammle alle Parameter bis zum Zeilenende/Keyword
+        while (Peek().Type != TokenType.EOF && Peek().Value != "}" && !Check(TokenType.Keyword))
+        {
+            parameters.Add(ParseExpression());
+            if (Check(TokenType.Keyword))
+                break;
+        }
+
+        return new ZeichnenStatement { FormType = formType, Parameter = parameters, Line = startLine };
+    }
+
     if (Check(TokenType.Keyword) && Peek().Value == "während")
     {
         Match(TokenType.Keyword); // "während"

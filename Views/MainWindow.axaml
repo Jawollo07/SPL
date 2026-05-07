@@ -37,7 +37,7 @@
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto, 1*, Auto, 35, 200" Background="#0D1117">
+    <Grid RowDefinitions="Auto, 1*, Auto, 35, 200, Auto, 250" Background="#0D1117">
         
         <!-- 1. Header with Toolbar -->
         <Border Grid.Row="0" Background="#161B22" BorderBrush="#30363D" BorderThickness="0,0,0,1" Padding="16,12">
@@ -102,5 +102,13 @@
                                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
                                     Margin="0"/>
         </Grid>
+
+        <!-- 6. Graphics Section Header -->
+        <Border Grid.Row="5" Background="#161B22" BorderBrush="#30363D" BorderThickness="0,1,0,1" Padding="16,10">
+            <TextBlock Text="🎨 Grafik / Zeichnung" FontSize="13" Foreground="#8B949E" FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- 7. Canvas for Drawing -->
+        <Canvas Grid.Row="6" Name="DrawingCanvas" Background="#1C2128" Margin="0"/>
     </Grid>
 </Window>
