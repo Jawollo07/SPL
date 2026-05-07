@@ -3,11 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Avalonia.Media;
+using AvaloniaEdit;
+using AvaloniaEdit.Highlighting;
+using AvaloniaEdit.Highlighting.Xshd;
+using AvaloniaEdit.Rendering;
+using System.Xml;
 
 namespace Jugend_Forscht.Views;
 
 // --- Daten Strukturen ---
-public enum TokenType { Keyword, Identifier, Number, String, Operator, Separator, EOF }
+public enum TokenType { Keyword, Identifier, Number, String, Operator, Separator, Comment, EOF }
 public record Token(TokenType Type, string Value, int Line);
 
 public abstract class Statement { public int Line { get; set; } }
@@ -32,18 +38,18 @@ public class WahrendStatement : Statement
     public Expression Bedingung { get; set; } = new LiteralExpr();
     public List<Statement> Korper { get; set; } = new();
 }
-public class WennStatement : Statement
-{
-    public Expression Bedingung { get; set; } = new LiteralExpr();
-    public List<Statement> DannBlock { get; set; } = new();
-    public List<Statement> SonstBlock { get; set; } = new();
-}
+public class WennStatement : Statement { public Expression Bedingung { get; set; } = new LiteralExpr(); public List<Statement> DannBlock { get; set; } = new(); public List<Statement> SonstBlock { get; set; } = new(); }
 
 public partial class MainWindow : Window
 {
+    private ErrorLineRenderer _errorRenderer;
     public MainWindow()
     {
         InitializeComponent();
+        SetupSyntaxHighlighting(); // Hier aktivieren wir die Farben
+        // Renderer registrieren
+        _errorRenderer = new ErrorLineRenderer(Editor);
+        Editor.TextArea.TextView.BackgroundRenderers.Add(_errorRenderer);
     }
     bool debugMode = true; // Debug-Modus für detailliertere Fehlermeldungen
     public void Run_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -55,14 +61,53 @@ public partial class MainWindow : Window
         }
         ExecuteCode();
     }
+    // Style für Syntax-Highlighting laden
+    private void SetupSyntaxHighlighting()
+    {
+        // Wir definieren die Farben für deine Sprache "SPL"
+        string xshdContent = @"
+        <SyntaxDefinition name=""SPL"" xmlns=""http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008"">
+            <Color name=""Keywords"" foreground=""#569DAA"" fontWeight=""bold"" />
+            <Color name=""Strings"" foreground=""#D69D85"" />
+            <Color name=""Numbers"" foreground=""#B5CEA8"" />
+            <Color name=""Comments"" foreground=""#57A64A"" />
 
+            <RuleSet>
+                <Keywords color=""Keywords"">
+                    <Word>drucke</Word>
+                    <Word>ist</Word>
+                    <Word>wenn</Word>
+                    <Word>sonst</Word>
+                    <Word>während</Word>
+                    <Word>eingeben</Word>
+                </Keywords>
+
+                <Span color=""Strings"">
+                    <Begin>""</Begin>
+                    <End>""</End>
+                </Span>
+
+                <Rule color=""Numbers"">
+                    \b\d+(\.\d+)?\b
+                </Rule>
+            </RuleSet>
+        </SyntaxDefinition>";
+
+        using (var reader = new XmlTextReader(new System.IO.StringReader(xshdContent)))
+        {
+            Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+        }
+    }
     // --- Logik ---
     private Dictionary<string, object> _variables = new();
 
     public void ExecuteCode()
     {
         try 
-        {   
+        {      
+            // 1. Alte Fehler-Markierung entfernen
+            _errorRenderer.ErrorLine = null;
+            Editor.TextArea.TextView.InvalidateLayer(KnownLayer.Background);
             _variables.Clear(); // Variablen bei jedem Start zurücksetzen
             string input = Editor.Text ?? ""; 
 
@@ -76,6 +121,14 @@ public partial class MainWindow : Window
         }
         catch (System.Exception ex)
         {
+            // 2. Zeile aus der Fehlermeldung extrahieren (wenn vorhanden)
+            // Wir suchen nach dem Muster "Zeile X" in deiner Exception-Message
+            var match = Regex.Match(ex.Message, @"Zeile (\d+)");
+            if (match.Success)
+            {
+                _errorRenderer.ErrorLine = int.Parse(match.Groups[1].Value);
+            }
+            Editor.TextArea.TextView.InvalidateLayer(KnownLayer.Background);
             Output.Text += $"[Fehler] {ex.Message}\n";
         }
     }
@@ -172,6 +225,19 @@ private object EvaluateBinary(BinaryExpr b)
                     RunInterpreter(wahrend.Korper);
                     }
                 }
+                else if (smt is Zuweisung z && z.VariableName == "__wait_duration")
+                {
+                    // Spezielle Behandlung für Warte-Zuweisungen
+                    object durationObj = Evaluate(z.Wert);
+                    if (durationObj is double duration)
+                    {
+                        System.Threading.Thread.Sleep((int)(duration * 1000)); // Wartezeit in Millisekunden
+                    }
+                    else
+                    {
+                        throw new Exception($"Zeile {z.Line}: Wartezeit muss eine Zahl sein");
+                    }
+                }
             }
             catch (System.Exception ex)
             {
@@ -185,8 +251,9 @@ private object EvaluateBinary(BinaryExpr b)
     {
         private readonly List<(TokenType Type, string Pattern)> _definitions = new()
         {
+            (TokenType.Comment, @"#.*"), // Ignoriert Kommentare
             (TokenType.String, @"""[^""]*"""), // Strings FIRST - vor Identifiern!
-            (TokenType.Keyword, @"\b(drucke|eingabe|ist|sonst|während)\b"),
+            (TokenType.Keyword, @"\b(drucke|eingabe|ist|sonst|während|exit|warte)\b"), // Keywords vor Identifiern!
             (TokenType.Number, @"\d+(?:\.\d+)?"), // Mit Float-Support
             (TokenType.Identifier, @"[a-zA-Z_][a-zA-Z0-9_]*"),
             (TokenType.Operator, @"(==|>=|<=|>|<|\+|-|\*|/|=)"), // Reihenfolge wichtig: == vor =
@@ -212,8 +279,10 @@ private object EvaluateBinary(BinaryExpr b)
                     var match = regex.Match(input.Substring(index));
                     if (match.Success)
                     {
-                        // Hier geben wir die aktuelle Zeile mit!
-                        tokens.Add(new Token(def.Type, match.Value, currentLine));
+                        if (def.Type != TokenType.Comment)
+                        {
+                            tokens.Add(new Token(def.Type, match.Value, currentLine));
+                        }
                         index += match.Length;
                         matched = true;
                         break;
@@ -262,7 +331,23 @@ private object EvaluateBinary(BinaryExpr b)
     private Statement ParseStatement()
 {
     int startLine = Peek().Line;
-
+    if (Check(TokenType.Comment))
+    {
+        Match(TokenType.Comment); // Kommentare überspringen
+        return ParseStatement(); // Nächstes Statement parsen
+    }
+    if (Check(TokenType.Keyword) && Peek().Value == "warte")
+    {
+        Match(TokenType.Keyword); // "warte"
+        var duration = ParseExpression();
+        return new Zuweisung { VariableName = "__wait_duration", Wert = duration, Line = startLine }; // Speichert die Wartezeit in einer speziellen Variable
+    }
+    if (Check(TokenType.Keyword) && Peek().Value == "exit")
+    {
+        Match(TokenType.Keyword);
+        System.Environment.Exit(0); // Beendet die Anwendung sofort
+        return null; // Dieser Code wird nie erreicht, aber der Parser erwartet einen Rückgabewert
+    }
     if (Check(TokenType.Keyword) && Peek().Value == "drucke")
     {
         Match(TokenType.Keyword);
@@ -450,6 +535,27 @@ private object EvaluateBinary(BinaryExpr b)
         else
         {
             throw new System.Exception($"Unerwartetes Token: {Peek().Value}");
+        }
+    }
+}
+public class ErrorLineRenderer : IBackgroundRenderer
+{
+    private TextEditor _editor;
+    public int? ErrorLine { get; set; }
+
+    public ErrorLineRenderer(TextEditor editor) => _editor = editor;
+
+    public KnownLayer Layer => KnownLayer.Background;
+
+    public void Draw(TextView textView, DrawingContext drawingContext)
+    {
+        if (ErrorLine == null || ErrorLine < 1 || ErrorLine > _editor.Document.LineCount) return;
+
+        var line = _editor.Document.GetLineByNumber(ErrorLine.Value);
+        foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, line))
+        {
+            // Ein transparentes Rot, damit der Text lesbar bleibt
+            drawingContext.DrawRectangle(new SolidColorBrush(Color.Parse("#44FF0000")), null, rect);
         }
     }
 }
