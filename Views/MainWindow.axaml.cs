@@ -36,6 +36,8 @@ public class Leeren : Statement { }
 public class Drucken : Statement { public Expression ExpressionValue { get; set; } = new LiteralExpr(); }
 public class Zuweisung : Statement { public string VariableName { get; set; } = ""; public Expression Wert { get; set; } = new LiteralExpr(); }
 public class EingebenStatement : Statement { public string VariableName { get; set; } = ""; }
+public class DateiLesenStatement : Statement { public string VariableName { get; set; } = ""; public Expression Dateiname { get; set; } = new LiteralExpr(); }
+public class ImportiereStatement : Statement { public Expression Dateiname { get; set; } = new LiteralExpr(); }
 public class ZeichnenStatement : Statement 
 { 
     public string FormType { get; set; } = ""; // kreis, rechteck, linie, stern
@@ -390,7 +392,7 @@ private object EvaluateBinary(BinaryExpr b)
         {
             (TokenType.Comment, @"#.*"), // Ignoriert Kommentare
             (TokenType.String, @"""[^""]*"""), // Strings FIRST - vor Identifiern!
-            (TokenType.Keyword, @"\b(drucke|leeren|eingabe|ist|sonst|während|exit|warte|zeichne)\b"), // Keywords vor Identifiern!
+            (TokenType.Keyword, @"\b(var|drucke|leeren|eingabe|lese_datei|importiere|ist|sonst|während|exit|warte|zeichne|wenn)\b"), // Keywords vor Identifiern!
             (TokenType.Number, @"\d+(?:\.\d+)?"), // Mit Float-Support
             (TokenType.Identifier, @"[a-zA-Z_][a-zA-Z0-9_]*"),
             (TokenType.Operator, @"(==|>=|<=|>|<|\+|-|\*|/|=)"), // Reihenfolge wichtig: == vor =
@@ -525,19 +527,13 @@ private object EvaluateBinary(BinaryExpr b)
         }
     }
 
-    if (Check(TokenType.Identifier))
+    if (Check(TokenType.Keyword) && Peek().Value == "var")
     {
-        var name = Match(TokenType.Identifier).Value;
-        if (Peek().Value == "=" || (Peek().Type == TokenType.Keyword && Peek().Value == "ist"))
-        {
-            _position++; 
-            var value = ParseExpression();
-            return new Zuweisung { VariableName = name, Wert = value, Line = startLine };
-        }
-        else
-        {
-            throw new Exception($"Zeile {startLine}: Identifier '{name}' benötigt '=' oder 'ist' für Zuweisung");
-        }
+        Match(TokenType.Keyword); // var
+        var varName = Match(TokenType.Identifier).Value;
+        Match(TokenType.Operator); // <--- ÄNDERUNG HIER: Vorher stand hier Separator
+        var value = ParseExpression();
+        return new Zuweisung { VariableName = varName, Wert = value, Line = startLine };
     }
 
     if (Check(TokenType.Keyword) && Peek().Value == "eingabe")

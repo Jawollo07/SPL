@@ -1,0 +1,5 @@
+1. Begrüßung
+2. Vorstellung/Simple Erklärung
+3. Genauere Vorstellung von SPL
+4. Vergleich
+5. Ende
