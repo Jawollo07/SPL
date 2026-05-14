@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace Jugend_Forscht;
+namespace SPL;
 
 sealed class Program
 {

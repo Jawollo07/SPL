@@ -1,4 +1,4 @@
-﻿namespace Jugend_Forscht.ViewModels;
+﻿namespace SPL.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {

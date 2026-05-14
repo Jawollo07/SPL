@@ -18,61 +18,66 @@
 	</head>
 	<body>
 		<div class="reveal">
-			<div class="slides">
-				<section>
-					<h1>Willkommen</h1>
-				</section>
-				<section>
-					<h2>Worum geht es in meinem Projekt?</h2>
-					<p>In meinem Projekt geht es um die Entwicklung einer Programmiersprache die sehr Simple und einfach zum lernen ist</p>
-				</section>
-				<section>
-					<h2>Funktionsweise</h2>
-				</section>
-				<section>
-				<section style="padding: 20px;">
-    				<div style="display: flex; flex-direction: column; align-items: center; gap: 15px; max-width: 100%; margin: 0 auto;">
+    <div class="slides">
+        <section>
+            <h1>Willkommen</h1>
+        </section>
         
-        				<h2 style="margin: 0;">Lexing</h2>
+        <section>
+            <h2>Worum geht es in meinem Projekt?</h2>
+            <p>In meinem Projekt geht es um die Entwicklung einer Programmiersprache, die sehr simpel und einfach zu lernen ist.</p>
+        </section>
         
-        				<p style="text-align: center; max-width: 600px;">
-            			Der erste Schritt ist das Lexing, dabei wird der Quellcode in Tokens umgewandelt, die die grundlegenden Bausteine des Codes darstellen.
-        				</p>
-
-        				<!-- Das Bild passt sich automatisch der Breite des Containers an -->
-        				<img src="img/lexing.png" alt="Lexing Prozess" style="max-width: 100%; height: auto; border-radius: 8px;">
+        <section>
+            <h2>Funktionsweise</h2>
+        </section>
         
-        				<p style="font-size: 0.8rem; color: gray; margin-top: -10px;">KI Generiertes Bild</p>
+        <section>
+            <h2>1. Lexing</h2>
+            <p style="font-size: 25px; margin:auto;">Beim Lexing wird der eingegebene Code in seine Einzelteile zerlegt.</p>
+            <img src="img/lexing.png" alt="Darstellung des Lexing-Prozesses" style="margin: auto;">
+            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
+        </section>
         
-    				</div>
-				</section>
-				<section>
-					<h2>Parsing</h2>
-					<p>Der zweite Schritt ist das Parsing, dabei werden die Tokens in eine abstrakte Syntaxbaum (AST) umgewandelt, der die Struktur des Codes darstellt.</p>
-					<iframe></iframe>
-				</section>
-				<section>
-					<h2>Code Generierung</h2>
-					<p>Der dritte Schritt ist die Code Generierung, dabei wird der AST in ausführbaren Code umgewandelt.</p>
-					<iframe></iframe>
-				</section>
-				<section>
-					
-				</section>
-				<section>
-					<p>Wo ist der unterschied zu komplexeren Sprachen wie bsp. Java?</p>
-					<pre><code>drucke "Hello World"</code></pre>
-					<p>Im vergleich zu Java:</p>
-					<pre><code>public class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello World");
-	}
-}</code></pre>
-				</section>
-				<section>
-					<h2></h2>
-				</section>
-			</div>
+        <section>
+            <h2>2. Parsing</h2>
+            <p style="font-size: 25px; margin:auto;">Der zweite Schritt ist das Parsing. Dabei werden die Tokens in einen abstrakten Syntaxbaum (AST) umgewandelt, der die logische Struktur des Codes darstellt.</p>
+            <img src="img/parsing.png" alt="Darstellung des Parsing-Prozesses" style="margin: auto;">
+            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
+        </section>
+        
+        <section>
+            <h2>3. Codegenerierung</h2>
+            <p style="font-size: 25px; margin:auto;">Der dritte Schritt ist die Codegenerierung. Dabei wird der AST in ausführbaren Code umgewandelt.</p>
+            <img src="img/code_execution.png" alt="Darstellung der Codegenerierung" style="margin: auto;">
+            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
+        </section>
+        <section>
+        	<section>
+            	<h2>Wo liegt der Unterschied zu komplexeren Sprachen?</h2>
+            	<p>Meine einfache Sprache:</p>
+            	<pre><code class="language-plaintext">drucke "Hello World"</code></pre>
+            
+            	<p>Im Vergleich dazu Java:</p>
+            	<pre><code class="language-java">public class HelloWorld {
+    	public static void main(String[] args) {
+        	System.out.println("Hello World");
+    	}
+	}</code></pre>
+        	</section>
+			<section>
+				<p>Meine einfache Sprache:</p>
+            	<pre><code class="language-plaintext">drucke "Hello World"</code></pre>
+            
+            	<p>Im Vergleich dazu Java:</p>
+            	<pre><code class="language-java">public class HelloWorld {
+    	public static void main(String[] args) {
+        	System.out.println("Hello World");
+    	}
+	}</code></pre>
+			</section>
+		</section>
+    	</div>
 		</div>
 		<script src="dist/reveal.js"></script>
 		<script src="dist/plugin/notes.js"></script>

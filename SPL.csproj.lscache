@@ -13,19 +13,7 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=Jugend Forscht
-CommandLineArgsForDesignTimeEvaluation=-langversion:14.0 -define:TRACE
-CompilerGeneratedFilesOutputPath=
-MaxSupportedLangVersion=14.0
-ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=Jugend_Forscht
-RunAnalyzers=
-RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
-TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>bin/Debug/net10.0/Jugend Forscht.dll
-TargetRefPath=<PATH>obj/Debug/net10.0/ref/Jugend Forscht.dll
-TemporaryDependencyNodeTargetIdentifier=net10.0
+SolutionPath=<PATH>SPL.sln
 
 [commandLineArguments]
 /noconfig
@@ -44,8 +32,8 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /debug:portable
 /filealign:512
 /optimize-
-/out:"obj/Debug/net10.0/Jugend Forscht.dll"
-/refout:"obj/Debug/net10.0/refint/Jugend Forscht.dll"
+/out:obj/Debug/net10.0/SPL.dll
+/refout:obj/Debug/net10.0/refint/SPL.dll
 /target:winexe
 /warnaserror-
 /utf8output
@@ -58,7 +46,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 App.axaml.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
- Jugend Forscht.AssemblyInfo.cs
+ SPL.AssemblyInfo.cs
 Program.cs
 ViewLocator.cs
 ViewModels/
@@ -295,7 +283,7 @@ Views/MainWindow.axaml.cs
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/10.0.104/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
-obj/Debug/net10.0/Jugend Forscht.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net10.0/SPL.GeneratedMSBuildEditorConfig.editorconfig
 
 [additionalFiles]
 App.axaml
