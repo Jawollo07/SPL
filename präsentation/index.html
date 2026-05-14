@@ -1,98 +1,195 @@
 <!DOCTYPE html>
 <html lang="de">
-	<head>
-		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-		<title>SPL</title>
+        <title>SPL - Simple Programming Language</title>
 
-		<link rel="stylesheet" href="dist/reset.css" />
-		<link rel="stylesheet" href="dist/reveal.css" />
-		<link rel="stylesheet" href="dist/theme/black.css" />
+        <link rel="stylesheet" href="dist/reset.css" />
+        <link rel="stylesheet" href="dist/reveal.css" />
+        <link rel="stylesheet" href="dist/theme/black.css" />
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
-	</head>
-	<body>
-		<div class="reveal">
-    <div class="slides">
-        <section>
-            <h1>Willkommen</h1>
-        </section>
+        <!-- Monokai Theme für Syntax Highlighting -->
+        <link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
         
-        <section>
-            <h2>Worum geht es in meinem Projekt?</h2>
-            <p>In meinem Projekt geht es um die Entwicklung einer Programmiersprache, die sehr simpel und einfach zu lernen ist.</p>
-        </section>
-        
-        <section>
-            <h2>Funktionsweise</h2>
-        </section>
-        
-        <section>
-            <h2>1. Lexing</h2>
-            <p style="font-size: 25px; margin:auto;">Beim Lexing wird der eingegebene Code in seine Einzelteile zerlegt.</p>
-            <img src="img/lexing.png" alt="Darstellung des Lexing-Prozesses" style="margin: auto;">
-            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
-        </section>
-        
-        <section>
-            <h2>2. Parsing</h2>
-            <p style="font-size: 25px; margin:auto;">Der zweite Schritt ist das Parsing. Dabei werden die Tokens in einen abstrakten Syntaxbaum (AST) umgewandelt, der die logische Struktur des Codes darstellt.</p>
-            <img src="img/parsing.png" alt="Darstellung des Parsing-Prozesses" style="margin: auto;">
-            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
-        </section>
-        
-        <section>
-            <h2>3. Codegenerierung</h2>
-            <p style="font-size: 25px; margin:auto;">Der dritte Schritt ist die Codegenerierung. Dabei wird der AST in ausführbaren Code umgewandelt.</p>
-            <img src="img/code_execution.png" alt="Darstellung der Codegenerierung" style="margin: auto;">
-            <p style="font-size: 15px; margin:auto; color: gray;">*KI-generiertes Bild</p>
-        </section>
-        <section>
-        	<section>
-            	<h2>Wo liegt der Unterschied zu komplexeren Sprachen?</h2>
-            	<p>Meine einfache Sprache:</p>
-            	<pre><code class="language-plaintext">drucke "Hello World"</code></pre>
-            
-            	<p>Im Vergleich dazu Java:</p>
-            	<pre><code class="language-java">public class HelloWorld {
-    	public static void main(String[] args) {
-        	System.out.println("Hello World");
-    	}
-	}</code></pre>
-        	</section>
-			<section>
-				<p>Meine einfache Sprache:</p>
-            	<pre><code class="language-plaintext">drucke "Hello World"</code></pre>
-            
-            	<p>Im Vergleich dazu Java:</p>
-            	<pre><code class="language-java">public class HelloWorld {
-    	public static void main(String[] args) {
-        	System.out.println("Hello World");
-    	}
-	}</code></pre>
-			</section>
-		</section>
-    	</div>
-		</div>
-		<script src="dist/reveal.js"></script>
-		<script src="dist/plugin/notes.js"></script>
-		<script src="dist/plugin/markdown.js"></script>
-		<script src="dist/plugin/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+        <style>
+            /* Eigene kleine Anpassungen für bessere Lesbarkeit */
+            .compare-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+            }
+            .compare-box {
+                width: 48%;
+            }
+            .compare-box p {
+                font-size: 0.8em;
+                margin-bottom: 10px;
+                color: #42affa;
+            }
+            pre {
+                font-size: 0.5em !important;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                
+                <!-- Titel-Slide -->
+                <section>
+                    <h1>SPL</h1>
+                    <h3>Simple Programming Language</h3>
+                    <p><small>Die Logik des Programmierens einfach verstehen</small></p>
+                </section>
+                
+                <!-- Projekt-Vision -->
+                <section>
+                    <h2>Das Ziel</h2>
+                    <p>Entwicklung einer Programmiersprache, die Barrieren abbaut und den Fokus rein auf die <strong>logischen Strukturen</strong> legt.</p>
+                </section>
+                
+                <!-- Technische Umsetzung (Vertikale Slides) -->
+                <section>
+                    <section>
+                        <h2>Wie funktioniert SPL?</h2>
+                        <p>Drei Hauptschritte von der Eingabe bis zur Ausführung.</p>
+                    </section>
+                    
+                    <section>
+                        <h2>1. Lexing</h2>
+                        <p style="font-size: 25px;">Zerlegung des Quellcodes in <em>Tokens</em> (Sinn-Einheiten).</p>
+                        <img src="img/lexing.png" alt="Lexing Prozess" style="max-height: auto;">
+                        <aside class="notes">Hier erklärst du, wie Wörter wie 'drucke' erkannt werden.</aside>
+                    </section>
+                    
+                    <section>
+                        <h2>2. Parsing</h2>
+                        <p style="font-size: 25px;">Erstellung eines <strong>Abstrakten Syntaxbaums (AST)</strong>.</p>
+                        <img src="img/parsing.png" alt="Parsing Prozess" style="max-height: auto;">
+                    </section>
+                    
+                    <section>
+                        <h2>3. Codegenerierung</h2>
+                        <p style="font-size: 25px;">Umwandlung des AST in ausführbare Logik.</p>
+                        <img src="img/code_execution.png" alt="Codegenerierung" style="max-height: auto;">
+                    </section>
+                </section>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
-			});
-		</script>
-	</body>
+                <!-- Vergleiche -->
+                <section>
+                    <section>
+                        <h2>Warum SPL?</h2>
+                        <p>Ein Vergleich der Komplexität.</p>
+                    </section>
+
+                    <section>
+                        <h3>Vergleich: Ausgabe</h3>
+                        <div class="compare-container">
+                            <div class="compare-box fragment">
+                                <p>SPL:</p>
+                                <pre><code class="language-plaintext" data-trim>
+                                drucke "Hello World"
+                                </code></pre>
+                            </div>
+                            <div class="compare-box fragment">
+                                <p>Java:</p>
+                                <pre><code class="language-java" data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
+                                public class HelloWorld {
+                                    public static void main(String[] args) {
+                                        System.out.println("Hello World");
+                                    }
+                                }
+                                </code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 style="margin: auto;">Vergleich: Eingabe</h3>
+                        <div class="compare-container fragment">
+                            <div class="compare-box">
+                                <p>SPL:</p>
+                                <pre><code class="language-plaintext" data-trim data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
+eingabe name
+drucke "Hallo " + name
+                                </code></pre>
+                            </div>
+                            <div class="compare-box fragment">
+                                <p>Java:</p>
+                                <pre><code class="language-java" data-trim>
+                                import java.util.Scanner;
+                                public class Main {
+                                    public static void main(String[] args) {
+                                        Scanner s = new Scanner(System.in);
+                                        String name = s.nextLine();
+                                        System.out.println("Hallo " + name);
+                                    }
+                                }
+                                </code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3>Vergleich: Rechnen</h3>
+                        <div class="compare-container fragment">
+                            <div class="compare-box">
+                                <p>SPL:</p>
+                                <pre><code class="language-plaintext" data-trim>
+                                a = 10
+                                b = 5.5
+                                drucke a + b
+                                </code></pre>
+                            </div>
+                            <div class="compare-box fragment">
+                                <p>C++:</p>
+                                <pre><code class="language-cpp" data-trim>
+                                #include &lt;iostream&gt;
+                                int main() {
+                                    int a = 10;
+                                    double b = 5.5;
+                                    std::cout << a + b;
+                                    return 0;
+                                }
+                                </code></pre>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+				<section>
+					<h2 style="margin: auto;">Technische Details</h2>
+					<p style="margin: auto;">Programmiersprache: C#</p>
+					<p style="margin: auto;">GUI-Framework: Avalonia</p>
+					<p style="margin: auto;">Lexing/Parsing: Handgeschrieben</p>
+					<p style="margin: auto;">Codegenerierung: Dynamische Ausführung via C#-Scripting</p>
+					<p style="margin: auto;">Dotnet: .NET 10</p>
+				</section>
+				<section>
+					<h1>Ende</h1>
+					<h3>Dies war meine Präsentation</h3>
+				</section>
+
+            </div>
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="dist/plugin/notes.js"></script>
+        <script src="dist/plugin/markdown.js"></script>
+        <script src="dist/plugin/highlight.js"></script>
+        <script>
+            Reveal.initialize({
+                hash: true,
+                // Hilft dabei, dass der Code schön eingerückt bleibt
+                highlight: {
+                    beforeHighlight: highlight => {
+                        // Optional: Hier könnten manuelle Anpassungen am Code-Text erfolgen
+                    }
+                },
+                plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+            });
+        </script>
+    </body>
 </html>
