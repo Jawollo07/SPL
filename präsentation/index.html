@@ -50,114 +50,107 @@
                     <h2>Das Ziel</h2>
                     <p>Entwicklung einer Programmiersprache, die Barrieren abbaut und den Fokus rein auf die <strong>logischen Strukturen</strong> legt.</p>
                 </section>
-                
-                <!-- Technische Umsetzung (Vertikale Slides) -->
                 <section>
-                    <section>
-                        <h2>Wie funktioniert SPL?</h2>
-                        <p>Drei Hauptschritte von der Eingabe bis zur Ausführung.</p>
-                    </section>
+                    <h2>Wie funktioniert SPL?</h2>
+                    <p>Drei Hauptschritte von der Eingabe bis zur Ausführung.</p>
+                </section>
+                
+                <section>
+                    <h2>1. Lexing</h2>
+                    <p style="font-size: 25px;">Zerlegung des Quellcodes in <em>Tokens</em> (Sinn-Einheiten).</p>
+                    <img src="img/lexing.png" alt="Lexing Prozess" style="max-height: auto;">
+                    <aside class="notes">Hier erklärst du, wie Wörter wie 'drucke' erkannt werden.</aside>
+                </section>
                     
-                    <section>
-                        <h2>1. Lexing</h2>
-                        <p style="font-size: 25px;">Zerlegung des Quellcodes in <em>Tokens</em> (Sinn-Einheiten).</p>
-                        <img src="img/lexing.png" alt="Lexing Prozess" style="max-height: auto;">
-                        <aside class="notes">Hier erklärst du, wie Wörter wie 'drucke' erkannt werden.</aside>
-                    </section>
+                <section>
+                    <h2>2. Parsing</h2>
+                    <p style="font-size: 25px;">Erstellung eines <strong>Abstrakten Syntaxbaums (AST)</strong>.</p>
+                    <img src="img/parsing.png" alt="Parsing Prozess" style="max-height: auto;">
+                </section>
                     
-                    <section>
-                        <h2>2. Parsing</h2>
-                        <p style="font-size: 25px;">Erstellung eines <strong>Abstrakten Syntaxbaums (AST)</strong>.</p>
-                        <img src="img/parsing.png" alt="Parsing Prozess" style="max-height: auto;">
-                    </section>
-                    
-                    <section>
-                        <h2>3. Codegenerierung</h2>
-                        <p style="font-size: 25px;">Umwandlung des AST in ausführbare Logik.</p>
-                        <img src="img/code_execution.png" alt="Codegenerierung" style="max-height: auto;">
-                    </section>
+                <section>
+                    <h2>3. Codegenerierung</h2>
+                    <p style="font-size: 25px;">Umwandlung des AST in ausführbare Logik.</p>
+                    <img src="img/code_execution.png" alt="Codegenerierung" style="max-height: auto;">
                 </section>
 
                 <!-- Vergleiche -->
                 <section>
-                    <section>
-                        <h2>Warum SPL?</h2>
-                        <p>Ein Vergleich der Komplexität.</p>
-                    </section>
+                    <h2>Warum SPL?</h2>
+                    <p>Ein Vergleich der Komplexität.</p>
+                </section>
 
-                    <section>
-                        <h3>Vergleich: Ausgabe</h3>
-                        <div class="compare-container">
-                            <div class="compare-box fragment">
-                                <p>SPL:</p>
-                                <pre><code class="language-plaintext" data-trim>
-                                drucke "Hello World"
-                                </code></pre>
-                            </div>
-                            <div class="compare-box fragment">
-                                <p>Java:</p>
-                                <pre><code class="language-java" data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
-                                public class HelloWorld {
-                                    public static void main(String[] args) {
-                                        System.out.println("Hello World");
-                                    }
+                <section>
+                    <h3>Vergleich: Ausgabe</h3>
+                   <div class="compare-container">
+                        <div class="compare-box fragment">
+                            <p>Java:</p>
+                            <pre><code class="language-java" data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
+                            public class HelloWorld {
+                                public static void main(String[] args) {
+                                    System.out.println("Hello World");
                                 }
-                                </code></pre>
-                            </div>
+                            }
+                            </code></pre>
                         </div>
-                    </section>
+                        <div class="compare-box fragment">
+                            <p>SPL:</p>
+                            <pre><code class="language-plaintext" data-trim>
+                            drucke "Hello World"
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
 
-                    <section>
-                        <h3 style="margin: auto;">Vergleich: Eingabe</h3>
-                        <div class="compare-container fragment">
-                            <div class="compare-box">
-                                <p>SPL:</p>
-                                <pre><code class="language-plaintext" data-trim data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
+                <section>
+                    <h3 style="margin: auto;">Vergleich: Eingabe</h3>
+                    <div class="compare-container fragment">
+                        <div class="compare-box fragment">
+                            <p>Java:</p>
+                            <pre><code class="language-java" data-trim>
+                            import java.util.Scanner;
+                            public class Main {
+                                public static void main(String[] args) {                                        Scanner s = new Scanner(System.in);
+                                    String name = s.nextLine();
+                                    System.out.println("Hallo " + name);
+                                }
+                            }
+                            </code></pre>
+                        </div>
+                        <div class="compare-box fragment">
+                            <p>SPL:</p>
+                            <pre><code class="language-plaintext" data-trim data-trim noscroll style="max-width: 100%; overflow-x: auto; max-height: auto;">
 eingabe name
 drucke "Hallo " + name
-                                </code></pre>
-                            </div>
-                            <div class="compare-box fragment">
-                                <p>Java:</p>
-                                <pre><code class="language-java" data-trim>
-                                import java.util.Scanner;
-                                public class Main {
-                                    public static void main(String[] args) {
-                                        Scanner s = new Scanner(System.in);
-                                        String name = s.nextLine();
-                                        System.out.println("Hallo " + name);
-                                    }
-                                }
-                                </code></pre>
-                            </div>
+                            </code></pre>
                         </div>
-                    </section>
+                    </div>
+                </section>
 
-                    <section>
-                        <h3>Vergleich: Rechnen</h3>
-                        <div class="compare-container fragment">
-                            <div class="compare-box">
-                                <p>SPL:</p>
-                                <pre><code class="language-plaintext" data-trim>
-                                a = 10
-                                b = 5.5
-                                drucke a + b
-                                </code></pre>
-                            </div>
-                            <div class="compare-box fragment">
-                                <p>C++:</p>
-                                <pre><code class="language-cpp" data-trim>
-                                #include &lt;iostream&gt;
-                                int main() {
-                                    int a = 10;
-                                    double b = 5.5;
-                                    std::cout << a + b;
-                                    return 0;
-                                }
-                                </code></pre>
-                            </div>
+                <section>
+                    <h3>Vergleich: Rechnen</h3>
+                    <div class="compare-container fragment">
+                        <div class="compare-box fragment">
+                            <p>C++:</p>
+                            <pre><code class="language-cpp" data-trim>
+                            #include &lt;iostream&gt;
+                            int main() {
+                                int a = 10;
+                                double b = 5.5;
+                                std::cout << a + b;
+                                return 0;
+                            }
+                            </code></pre>
                         </div>
-                    </section>
+                        <div class="compare-box fragment">
+                            <p>SPL:</p>
+                            <pre><code class="language-plaintext" data-trim>
+                            a = 10
+                            b = 5.5
+                            drucke a + b
+                            </code></pre>
+                        </div>
+                    </div>
                 </section>
 				<section>
 					<h2 style="margin: auto;">Technische Details</h2>
@@ -166,7 +159,8 @@ drucke "Hallo " + name
 					<p style="margin: auto;">Lexing/Parsing: Handgeschrieben</p>
 					<p style="margin: auto;">Codegenerierung: Dynamische Ausführung via C#-Scripting</p>
 					<p style="margin: auto;">Dotnet: .NET 10</p>
-				</section>
+                    <p style="margin: auto;">Zeilen Anzahl: ca. 1000</p>
+                </section>
 				<section>
 					<h1>Ende</h1>
 					<h3>Dies war meine Präsentation</h3>
@@ -182,14 +176,43 @@ drucke "Hallo " + name
         <script>
             Reveal.initialize({
                 hash: true,
-                // Hilft dabei, dass der Code schön eingerückt bleibt
-                highlight: {
-                    beforeHighlight: highlight => {
-                        // Optional: Hier könnten manuelle Anpassungen am Code-Text erfolgen
-                    }
-                },
                 plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
             });
+
+            // --- WEBSOCKET STEUERUNG HIER EINFÜGEN ---
+            // Ersetze die IP mit der IP deines Raspberry Pi!
+            const pi_ip = "192.168.178.59"; 
+            const ws = new WebSocket(`ws://${pi_ip}:8765`);
+
+            ws.onopen = function() {
+                console.log("Erfolgreich mit Raspberry Pi Joystick verbunden!");
+            };
+
+            ws.onmessage = function(event) {
+                const command = event.data;
+                console.log("Befehl empfangen:", command);
+
+                // Reveal.js API nutzen, um die Folien zu steuern
+                if (command === "next") {
+                    Reveal.next();
+                } else if (command === "prev") {
+                    Reveal.prev();
+                } else if (command === "down") {
+                    Reveal.down();
+                } else if (command === "up") {
+                    Reveal.up();
+                } else if (command === "overview") {
+                    Reveal.toggleOverview();
+                }
+            };
+
+            ws.onerror = function(error) {
+                console.error("WebSocket Fehler:", error);
+            };
+
+            ws.onclose = function() {
+                console.log("Verbindung zum Raspberry Pi verloren.");
+            };
         </script>
     </body>
 </html>
