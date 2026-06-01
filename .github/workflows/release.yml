@@ -1,0 +1,48 @@
+name: SPL Release Build
+
+on:
+  push:
+    tags:
+      - 'v*' # Der Workflow startet nur, wenn der Tag mit "v" beginnt (z.B. v1.0.0)
+
+permissions:
+  contents: write # Erforderlich, damit der Bot das Release erstellen darf
+
+jobs:
+  build-and-release:
+    name: Build for ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [win-x64, linux-x64, osx-x64]
+
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: .NET einrichten
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0' # Passe dies an deine verwendete .NET Version an
+
+      - name: Abhängigkeiten wiederherstellen
+        run: dotnet restore
+
+      - name: Projekt kompilieren und veröffentlichen
+        # -p:PublishSingleFile=true packt alles in eine ausführbare Datei
+        # Ersetze "./SPL/SPL.csproj" mit dem tatsächlichen Pfad zu deiner Projektdatei
+        run: dotnet publish ./SPL/SPL.csproj -c Release -r ${{ matrix.target }} --self-contained true -p:PublishSingleFile=true -o ./publish/${{ matrix.target }}
+
+      - name: Dateien zippen (Linux & macOS)
+        if: matrix.target != 'win-x64'
+        run: zip -r -j SPL-${{ github.ref_name }}-${{ matrix.target }}.zip ./publish/${{ matrix.target }}/*
+
+      - name: Dateien zippen (Windows)
+        if: matrix.target == 'win-x64'
+        run: 7z a SPL-${{ github.ref_name }}-${{ matrix.target }}.zip ./publish/${{ matrix.target }}/*
+
+      - name: GitHub Release erstellen und hochladen
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SPL-${{ github.ref_name }}-${{ matrix.target }}.zip
+          generate_release_notes: true
