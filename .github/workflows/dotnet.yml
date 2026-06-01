@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - rid: win-x64
-            binary_name: my-app-windows.exe
+            binary_name: SPL-windows.exe
           - rid: linux-x64
-            binary_name: my-app-linux
+            binary_name: SPL-linux
           - rid: osx-x64
-            binary_name: my-app-macos
+            binary_name: SPL-macos
 
     steps:
     - uses: actions/checkout@v4
