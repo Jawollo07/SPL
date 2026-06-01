@@ -375,7 +375,7 @@ public partial class MainWindow : Window
             }
         }
 
-        var path = new Path
+        var path = new Avalonia.Controls.Shapes.Path
         {
             Data = geometry,
             Fill = null,
