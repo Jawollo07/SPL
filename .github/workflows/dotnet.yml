@@ -1,16 +1,25 @@
-name: .NET CI & Release
+name: .NET Single-File Multi-Platform
 
 on:
   push:
     branches: [ "main" ]
     tags:
-      - 'v*' # Löst den Release-Job aus, wenn ein Tag mit "v" beginnt (z. B. v1.0.0)
+      - 'v*'
   pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - rid: win-x64
+            binary_name: my-app-windows.exe
+          - rid: linux-x64
+            binary_name: my-app-linux
+          - rid: osx-x64
+            binary_name: my-app-macos
 
     steps:
     - uses: actions/checkout@v4
@@ -29,40 +38,65 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-    # 1. Erstellt die fertigen Dateien für die Veröffentlichung
-    - name: Publish
-      run: dotnet publish -c Release -o ./publish
+    # Publish als Single-File und Self-Contained
+    - name: Publish for ${{ matrix.rid }}
+      run: >
+        dotnet publish -c Release 
+        -r ${{ matrix.rid }} 
+        --self-contained true 
+        -p:PublishSingleFile=true 
+        -p:PublishReadyToRun=true 
+        -o ./publish/${{ matrix.rid }}
 
-    # 2. Speichert die Dateien temporär ab
+    # Benennt die Datei eindeutig um, damit sie im Release unterscheidbar ist
+    - name: Rename Binary
+      shell: bash
+      run: |
+        cd ./publish/${{ matrix.rid }}
+        # Ermittelt den Namen der erstellten Datei (egal ob mit .exe oder ohne)
+        ORIGINAL_FILE=$(find . -maxdepth 1 -type f -not -name "*.pdb" | head -n 1)
+        mv "$ORIGINAL_FILE" "${{ matrix.binary_name }}"
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dotnet-app-files
-        path: ./publish
+        name: ${{ matrix.rid }}
+        path: ./publish/${{ matrix.rid }}/${{ matrix.binary_name }}
 
   release:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Erlaubt das Erstellen von Releases
-    if: startsWith(github.ref, 'refs/tags/') # Läuft NUR bei einem Git-Tag
+      contents: write
+    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-    - name: Download Artifact
+    - name: Download Windows Artifact
       uses: actions/download-artifact@v4
       with:
-        name: dotnet-app-files
-        path: ./app
+        name: win-x64
+        path: ./release-files
 
-    # Packt den Ordner in eine ZIP-Datei für den Download im Release
-    - name: Zip Files
-      run: zip -r dotnet-app-${{ github.ref_name }}.zip ./app
+    - name: Download Linux Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-x64
+        path: ./release-files
 
-    # Erstellt das Release auf GitHub
+    - name: Download macOS Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: osx-x64
+        path: ./release-files
+
+    # Lädt die drei fertigen ausführbaren Dateien direkt in das GitHub-Release hoch
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        files: dotnet-app-${{ github.ref_name }}.zip
+        files: |
+          ./release-files/SPL.exe
+          ./release-files/SPL-linux
+          ./release-files/SPL-macos
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
