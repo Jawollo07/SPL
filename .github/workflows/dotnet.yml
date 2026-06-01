@@ -39,6 +39,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
     # Publish als Single-File und Self-Contained
+        # Korrigierter Publish-Schritt mit AppHost-Erzwingung
     - name: Publish for ${{ matrix.rid }}
       run: >
         dotnet publish -c Release 
@@ -46,7 +47,9 @@ jobs:
         --self-contained true 
         -p:PublishSingleFile=true 
         -p:PublishReadyToRun=true 
+        -p:UseAppHost=true 
         -o ./publish/${{ matrix.rid }}
+
 
     # Benennt die Datei eindeutig um, damit sie im Release unterscheidbar ist
     - name: Rename Binary
