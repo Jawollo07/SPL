@@ -1,22 +1,24 @@
-name: .NET
+name: .NET CI & Release
 
 on:
   push:
-    # Der Workflow reagiert weiterhin auf main, erstellt ein Release aber z.B. nur bei Tags
     branches: [ "main" ]
     tags:
-      - 'v*' # Löst aus, wenn Sie ein Tag wie v1.0.0 pushen
+      - 'v*' # Löst den Release-Job aus, wenn ein Tag mit "v" beginnt (z. B. v1.0.0)
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0' # Ihre gewünschte Version
+        dotnet-version: 10.0
         
     - name: Restore dependencies
       run: dotnet restore
@@ -27,45 +29,40 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-    # Erstellt die fertigen .NET-Dateien (Artefakte)
-    - name: Publish Projekt
+    # 1. Erstellt die fertigen Dateien für die Veröffentlichung
+    - name: Publish
       run: dotnet publish -c Release -o ./publish
 
-    # Temporäres Speichern, damit der nächste Job darauf zugreifen kann
-    - name: Upload Artifacts
+    # 2. Speichert die Dateien temporär ab
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dotnet-app
-        path: ./publish/
+        name: dotnet-app-files
+        path: ./publish
 
   release:
-    needs: build # Läuft erst, wenn der Build-Job erfolgreich war
+    needs: build
     runs-on: ubuntu-latest
-    # Wichtig: Der GITHUB_TOKEN benötigt Schreibrechte für Releases
     permissions:
-      contents: write
-
-    # Bedingung: Dieser Job läuft NUR, wenn Sie ein Git-Tag pushen (z.B. v1.0.0)
-    if: startsWith(github.ref, 'refs/tags/')
+      contents: write # Erlaubt das Erstellen von Releases
+    if: startsWith(github.ref, 'refs/tags/') # Läuft NUR bei einem Git-Tag
 
     steps:
-    - name: Download Artifacts
-      uses: actions/upload-artifact@v4
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
       with:
-        name: dotnet-app
-        path: ./artifacts
+        name: dotnet-app-files
+        path: ./app
 
-    # Zippen Sie die Dateien für den Release-Anhang (optional, aber empfohlen)
-    - name: Zip Artifacts
-      run: zip -r dotnet-app-${{ github.ref_name }}.zip ./artifacts
+    # Packt den Ordner in eine ZIP-Datei für den Download im Release
+    - name: Zip Files
+      run: zip -r dotnet-app-${{ github.ref_name }}.zip ./app
 
-    # Erstellt das GitHub Release und lädt die Zip-Datei hoch
-    - name: Create Release
+    # Erstellt das Release auf GitHub
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         files: dotnet-app-${{ github.ref_name }}.zip
         name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
