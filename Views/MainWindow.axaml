@@ -85,7 +85,7 @@
         <TextBox Grid.Row="3" Name="InputField" Background="#0D1117" Foreground="#C9D1D9" 
                 BorderBrush="#30363D" Padding="12,8" Margin="0" 
                 BorderThickness="0" FontSize="13"
-                Watermark="Geben Sie Eingaben hier ein..."
+                PlaceholderText="Geben Sie Eingaben hier ein..."
                 ToolTip.Tip="Hier können Sie Text eingeben, wenn das Programm mit 'eingabe' wartet"/>
 
         <!-- 5. Output Section -->
